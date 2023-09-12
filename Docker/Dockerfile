@@ -1,4 +1,8 @@
-FROM debian:10
+FROM debian:11
+
+RUN sed -i -e 's/deb.debian.org/archive.debian.org/g' \
+           -e 's|security.debian.org|archive.debian.org/|g' \
+           -e '/stretch-updates/d' /etc/apt/sources.list
 
 RUN apt-get update -yq \
 && apt-get install curl gnupg -yq \
