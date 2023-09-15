@@ -1,20 +1,21 @@
-FROM debian:11
+# Utilisez l'image officielle Node.js version 10
+FROM node:10
 
-RUN sed -i -e 's/deb.debian.org/archive.debian.org/g' \
-           -e 's|security.debian.org|archive.debian.org/|g' \
-           -e '/stretch-updates/d' /etc/apt/sources.list
-
-RUN apt-get update -yq \
-&& apt-get install curl gnupg -yq \
-&& curl -sL https://deb.nodesource.com/setup_10.x | bash \
-&& apt-get install nodejs npm -yq \
-&& apt-get clean -y
-
+# Copiez le contenu de votre application dans le conteneur
 ADD . /app/
-WORKDIR /app
-RUN npm install
 
+# Définissez le répertoire de travail
+WORKDIR /app
+
+# Installez les dépendances de votre application
+RUN npm install
+RUN npm install sqlite3 --save
+
+# Exposez le port 2368 (assurez-vous que votre application utilise ce port)
 EXPOSE 2368
+
+# Définissez un volume pour les logs de l'application
 VOLUME /app/logs
 
+# Commande par défaut pour exécuter votre application
 CMD npm run start
